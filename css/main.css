@@ -1,5 +1,6 @@
 body{
     background-color:darkgrey;
+    margin: 0px auto;
 }
 .game{
     width: 550px;
@@ -78,26 +79,47 @@ body{
     /* border: 1px solid rgb(80, 80, 80);
     box-sizing: border-box; */
 }
-.history_score{
+.score{
     width: 100%;
     height: 50%;
-    
+
     text-align: center;
     line-height: 125%;
-    
+
     border: 1px solid rgb(80, 80, 80);
     box-sizing: border-box;
     /* background-color:rgb(255, 0, 0); */
 }
-.score{
+.game_button{
+    width: 550px;
+    height: 150px;
+    /* background-color:rgb(80, 80, 80); */
+    margin: 0px auto; /* 上0，左右auto 边距 */
+    position: relative;
+}
+.button{
+    position:absolute;
+    top: 0px;
+    left: 0px;
 
-    width: 100%;
-    height: 50%;
+    width: 275px;
+    height: 75px;
 
-    text-align: center;
-    line-height: 125%;
+    color: #fff !important; 
+    font-weight: bold;
+    text-decoration: none;
+    font-family: 'Open Sans Condensed',sans-serif;
+    font-size: 25px;
 
-    border: 1px solid rgb(80, 80, 80);
+    background-color: #a4cf6c;
+    box-shadow: 0 0 20px #526836 inset;
+    border-color: transparent;
+    /* border: 5px solid #d0ff92; */
+    /* border-radius: 10px #d0ff92; */
+
     box-sizing: border-box;
-    /* background-color:rgb(255, 0, 0); */
+}
+.button:active{
+    box-shadow: 0 0 100px #526836 inset;
+    
 }

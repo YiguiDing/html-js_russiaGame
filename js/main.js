@@ -74,8 +74,19 @@ function init_game()
     score=0;
     var text_score=document.getElementsByClassName("text_score")[0];
     text_score.innerHTML=score.toString();
+    //判断页面是否需要按钮
+    if(!isPc())//如果不是PC端则则需要按钮
+    {   //显示按钮
+        document.getElementsByClassName("game_button")[0].style.display="";
+
+    }
+    //计算并设置浏览器缩放
+    reSizeHtml();
+    //监听按键事件
     listen_keys();
+    //创建模型
     creat_pattern();
+    //自动下落
     autoDown();
 }
 function listen_keys()
@@ -99,7 +110,8 @@ function listen_keys()
             case Down:
                 console.log("Down");
                 //move_cell(1,0);
-                move_pattern(1,0);
+                // move_pattern(1,0);
+                fast_down();
                 break;
             case Up:
                 console.log("Up");
@@ -396,7 +408,7 @@ function autoDown()
         {
             move_pattern(1,0);
         },
-        600
+        300
     );
 }
 function draw_next_pattern()
@@ -428,4 +440,82 @@ function set_nextTimes_pattern(pattern)
         }
         nextTimes_pattern=deepClone(temp_pattern);//将计算出的值拷贝回去
     }
+}
+//判断是手机端还是pc端
+function isPc(){
+    console.log(window.navigator.userAgent);
+    //对请求头的内容用正则表达式匹配
+    if(window.navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))
+    {
+      return false; // 移动端
+    }else
+    {
+      return true; // PC端
+    }
+}
+
+function reSizeHtml()//按按游戏界面宽高缩放浏览器
+{   //假如浏览器窗口高为1000px，网页body500px,则如需按照页面高度铺满页面就要将页面缩放1000÷500=2倍
+
+    document.body.style.zoom=1;//页面缩放比例置1
+
+    var gameHeight=document.body.clientHeight;//界面高
+    var gameWidth =document.getElementsByClassName("game")[0].offsetWidth;//界面宽
+
+    var browerHeight=window.innerHeight;//浏览器宽
+    var browerWidth =window.innerWidth;//浏览器高
+
+    var full_height_rate=browerHeight/gameHeight;//按高度填满浏览器所需缩放比例
+    var full_width_rate =browerWidth/gameWidth; //按宽度填满浏览器所需缩放比例
+
+    console.log("游戏界面的高px:" + gameHeight);
+    console.log("游戏界面的宽px:" + gameWidth);
+
+    console.log("浏览器窗口的高px:" + browerHeight);
+    console.log("浏览器窗口的宽px:" + browerWidth);
+
+    console.log("按高度填满浏览器所需缩放比例:"+ full_height_rate);
+    console.log("按宽度填满浏览器所需缩放比例:" + full_width_rate);
+
+    if(full_height_rate>0||full_width_rate>0)
+        //放大时优先选择缩放比例小的。（防止过大的缩放比例导致行或宽的内容无法在一个页面呈现）
+        document.body.style.zoom=full_height_rate<full_width_rate? full_height_rate:full_width_rate;
+    else//缩小时优先选择缩放比例大的。（防止过小的缩放比例导致页面内容太小看不清）
+        document.body.style.zoom=full_height_rate>full_width_rate? full_height_rate:full_width_rate;
+
+}
+function down_step()
+{
+    var toDown=1,toLeft=0;
+    //移动方块
+    var cells = document.getElementsByClassName("cell");
+    for(var i=0;i < cells.length;i++)
+    {
+        cells[i].style.top  = parseInt(cells[i].style.top ||0,10) + toDown * STEP_LEN + 'px';
+        cells[i].style.left = parseInt(cells[i].style.left||0,10) + toLeft * STEP_LEN + 'px';
+    }
+
+    if(check_onFloor()||check_collision())//检测方块是否底部越界,或两方块碰撞重合。此时撤销移动方块操作(在原先的位置重新绘制)，
+    {
+        console.log("移动越界，恢复原位......");
+        //重新绘制
+        var cells = document.getElementsByClassName("cell");
+        for(var i=0;i < cells.length;i++)
+        {
+            cells[i].style.top  = parseInt(cells[i].style.top ||0,10) - toDown * STEP_LEN + 'px';
+            cells[i].style.left = parseInt(cells[i].style.left||0,10) - toLeft * STEP_LEN + 'px';
+        }
+        console.log("已恢复原位。");
+
+        if(toLeft!=0)//左右移动只需要恢复位置，不需要冻结
+            return false;
+        frozen();//冻结上下移动的方块
+        creat_pattern();//重新创建pattern
+        return true;
+    }
+    return false;//返回是否到底
+}
+function fast_down()
+{
+    while(!down_step());
 }
