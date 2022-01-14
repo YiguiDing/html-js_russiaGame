@@ -167,3 +167,38 @@ body{
     box-shadow: 0 0 100px #526836 inset;
     
 }
+.copyRightBox{
+    position: absolute;
+    left: 0px;
+    top:  750px;
+    
+    width: 150px;
+    height: 50px;
+
+    background-color: #73cd50;
+    box-sizing: border-box;
+}
+.copyRightText{
+    position:relative;
+    width: 150px;
+    height: 20px;
+
+    margin: 15px auto;
+
+    /* 文字上下左右居中对齐，设置颜色 */
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    /* 比父元素更小的尺寸 */
+    font-size:smaller;
+
+    /* border-bottom: 1px solid white; */
+    box-shadow: 0px 0px 5px #000000;
+
+    box-sizing: border-box;
+    background-color: #1f3f12;
+}
+.copyRightText a{
+    /* text-decoration: none; 下划线*/
+    color: white;
+}
