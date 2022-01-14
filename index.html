@@ -2,8 +2,6 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <!--用于在手机端设置缩放比例和禁止用户缩放(ios<10)，效果不理想 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" > -->
-        <!-- <meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" > -->
         <title>俄罗斯方块</title>
         <link rel="stylesheet" href="./css/main.css" >
     </head>
@@ -12,24 +10,28 @@
             <div class="background">
                 <!-- <div class="cell" style="top: 0px;left: 0px;"></div> -->
             </div>
-            <div class="next">
-                <div class="next_continer">
-                    <!-- <div class="cell" style="top: 0px;left: 0px;"></div> -->
+            <div class="right_sider">
+                <div class="next_pattern_box">
+                    <div class="next_continer">
+                        <!-- <div class="cell" style="top: 0px;left: 0px;"></div> -->
+                    </div>
+                </div>
+                <div class="score_box historyScore">
+                    <div  class="score">历史最高：<span class="text_history_score">0</span></div>
+                </div>
+                <div class="score_box presentScore">
+                    <div  class="score">当前得分：<span class="text_score">0</span></div>
                 </div>
             </div>
-            <div class="score_box">
-                <div class="score">最高：<strong class="text_history_score">0</strong></div>
-                <div class="score">得分：<strong class="text_score">0</strong></div>
+            <div class="game_button" style="display: none;">
+                <button class="button" id="id_button_Down" style="position: absolute;top:0px;left:0px;">下降</button>
+                <button class="button" id="id_button_Left" style="position: absolute;top:75px;left:0px;">左移</button>
+                <button class="button" id="id_button_Turn" style="position: absolute;top:0px;left:275px;">旋转</button>
+                <button class="button" id="id_button_Righ" style="position: absolute;top:75px;left:275px;">右移</button>
             </div>
         </div>
-        <div class="game_button" style="display: none;">
-            <button class="button" id="id_button_Down" style="position: absolute;top:0px;left:0px;">下降</button>
-            <button class="button" id="id_button_Left" style="position: absolute;top:75px;left:0px;">左移</button>
-            <button class="button" id="id_button_Turn" style="position: absolute;top:0px;left:275px;">旋转</button>
-            <button class="button" id="id_button_Righ" style="position: absolute;top:75px;left:275px;">右移</button>
-        </div>
     </body>
-    <script src="./js/jQueryv3.6.0.js"></script>
+    <script src="./js/jQuery_v3.6.0.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/event.js"></script>
 </html>

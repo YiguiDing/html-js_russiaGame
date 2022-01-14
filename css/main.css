@@ -1,27 +1,46 @@
 body{
-    background-color:darkgrey;
+    background-color:#b5d887;
     margin: 0px auto;
+    /* 禁止选中文字 */
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
 }
 .game{
     width: 550px;
     height: 800px;
-    background-color:rgb(80, 80, 80);
+    background-color:#86be3e;
     margin: 0px auto; /* 上0，左右auto 边距 */
     position: relative;
+    
+    /* border: 2px solid #8f2727; */
 }
 .background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
     width: 400px;
     height: 800px;
-    background-color:black;
-    position: relative;
-    top: auto;
-    left: auto;
+    background-color:#0a1506;
+
+}
+.right_sider{
+    position: absolute;
+    left: 400px;
+    top: 0px;
+
+    width: 150px;
+    height: 800px;
+
+    background-color:#a4cf6c;
+    box-sizing: border-box;
 }
 .cell{
     width: 40px;
     height: 40px;
-    background-color: aqua;
-    border: 0.3px solid white;
+    background-color: #33691E;
+    border: 0.3px solid #B1FF91;
     box-sizing: border-box;
     /* box-sizing: border-box  内容的宽 = width - border + padding */
     /* box-sizing: content-box 内容的宽 = width */ 
@@ -31,71 +50,96 @@ body{
 {
     width: 40px;
     height: 40px;
-    background-color:darkgray ;
-    border: 0.3px solid darkslategray;
+    background-color:#B1FF91 ;
+    border: 0.3px solid #33691E;
     box-sizing: border-box;
     /* box-sizing: border-box  内容的宽 = width - border + padding */
     /* box-sizing: content-box 内容的宽 = width */ 
     position: absolute;
 }
-.next{
+.next_pattern_box{
     position: absolute;
-    left: 400px;
+    left: 0px;
     top: 0px;
 
     width: 150px;
     height: 150px;
 
-    background-color:dimgrey;
-    border: 1px solid rgb(80, 80, 80);
+    background-color:#73cd50;
+    /* border-top: 2px solid #33691E;
+    border-bottom: 2px solid #33691E; */
     box-sizing: border-box;
 }
 .next_continer{
+    position: relative;
+    margin: 20px auto;
+    
     width: 100px;
     height: 100px;
 
-    background-color: rgb(133, 133, 133);
+    background-color: #1f3f12;
+    box-shadow: 0 0 25px #000000;
     
-    position: relative;
-    margin: 25px 25px;
+    border: 5px solid #ffffff;
+
 }
 .cell_next{
     width: 25px;
     height: 25px;
-    background-color: aqua;
-    border: 0.3px solid white;
+    background-color: #33691E;
+    border: 0.3px solid #a2de8a;
     box-sizing: border-box;
     position: absolute;
 }
 .score_box{
     position: absolute;
-    left: 400px;
-    top: 150px;
+    left: 0px;
+    top:  0px;
     
     width: 150px;
     height: 50px;
 
-    background-color:dimgrey;
-    /* border: 1px solid rgb(80, 80, 80);
-    box-sizing: border-box; */
+    background-color: #73cd50;
+    /* border: 1px solid rgb(80, 80, 80); */
+    box-sizing: border-box;
+}
+.score_box.historyScore{
+    position: absolute;
+    left: 0px;
+    top: 150px;
+}
+.score_box.presentScore{
+    position: absolute;
+    left: 0px;
+    top: 200px;
 }
 .score{
-    width: 100%;
-    height: 50%;
+    width: 85%;
+    height: 35px;
 
+    margin: 7.5px auto;
+
+    /* 文字上下左右居中对齐，设置颜色 */
     text-align: center;
-    line-height: 125%;
+    line-height: 35px;
+    color: white;
+    /* 比父元素更小的尺寸 */
+    font-size:smaller;
 
-    border: 1px solid rgb(80, 80, 80);
+    /* border: 1px solid rgb(255, 255, 255); */
+    box-shadow: 4px 4px 5px #000000;
+
     box-sizing: border-box;
-    /* background-color:rgb(255, 0, 0); */
+    background-color: #1f3f12;
 }
 .game_button{
     width: 550px;
     height: 150px;
     /* background-color:rgb(80, 80, 80); */
     margin: 0px auto; /* 上0，左右auto 边距 */
-    position: relative;
+    position: absolute;
+    top: 800px;
+    left: 0px;
 }
 .button{
     position:absolute;

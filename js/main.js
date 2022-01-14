@@ -5,7 +5,10 @@ const STEP_NEXT_LEN=25;//预览界面下一个方块的宽
 const MAX_COL=10;//边界宽
 const MAX_ROW=20;//边界高
 var score=0,temp_score=0,history_score=0;//得分
-var myInterval=0;//定时器
+var autoDownInterval=0;//定时器
+var fastDownInterval=0;//快速下降方块的定时器
+var fastLeftInterval=0;//快速左移方块的定时器
+var fastRighInterval=0;//快速右移方块的定时器
 var PATTERN=[
     {                   // 正L形状
         0:{row:1,col:1},// |   |   |   |   |            
@@ -58,7 +61,11 @@ var pattern_X=0,pattern_Y=0;
 function init_game()
 {
     //console.log("init_game函数被调用");
-
+    //先清除定时器再清除背景容器
+    clearInterval(autoDownInterval);
+    clearInterval(fastDownInterval);
+    clearInterval(fastLeftInterval);
+    clearInterval(fastRighInterval);
     //清空背景容器
     var background = document.getElementsByClassName("background")[0];//背景容器
     background.innerHTML=null;
@@ -100,12 +107,14 @@ function listen_keys()
             case Left:
                 console.log("Left");
                 //move_cell(0,-1);
-                move_pattern(0,-1);
+                // move_pattern(0,-1);
+                fast_left();
                 break;
             case Right:
                 console.log("Right");
                 //move_cell(0,1);
-                move_pattern(0,1);
+                // move_pattern(0,1);
+                fast_right();
                 break;
             case Down:
                 console.log("Down");
@@ -118,6 +127,30 @@ function listen_keys()
                 //move_cell(-1,0);
                 //move_pattern(-1,0);
                 turn_around();
+                break;
+        }
+
+
+    }
+    document.onkeyup = function(event){
+
+        switch(event.keyCode)
+        {
+            case Left:
+                console.log("Left");
+                stop_fast_left();
+                break;
+            case Right:
+                console.log("Right");
+                stop_fast_right();
+                break;
+            case Down:
+                console.log("Down");
+                stop_fast_down();
+                break;
+            case Up:
+                console.log("Up");
+                //
                 break;
         }
 
@@ -401,9 +434,9 @@ function check_gameOver()//就是检测被固定的方块frozen_cells有没有�
 }
 function autoDown()
 {
-    if(myInterval)
-        clearInterval(myInterval);
-    myInterval=setInterval(
+    if(autoDownInterval)
+        clearInterval(autoDownInterval);
+    autoDownInterval=setInterval(
         function()
         {
             move_pattern(1,0);
@@ -511,11 +544,62 @@ function down_step()
             return false;
         frozen();//冻结上下移动的方块
         creat_pattern();//重新创建pattern
+        stop_fast_down();//到达底部的时候清空快速降落定时器
         return true;
     }
+    pattern_X += toLeft;//没有方块越界，保存本次对pattern位置的修改
+    pattern_Y += toDown;
+    console.log("模型移动成功。");
     return false;//返回是否到底
 }
-function fast_down()
+function directly_down()//直接让方块落地
 {
     while(!down_step());
+}
+function fast_down()//加速下落
+{
+    if(!fastDownInterval)
+    {
+        clearInterval(fastDownInterval);
+        fastDownInterval=setInterval(function(){
+            down_step();
+        },20);
+    }
+}
+function stop_fast_down()
+{
+    clearInterval(fastDownInterval);
+    fastDownInterval=null;
+}
+function fast_left()
+{
+    if(!fastLeftInterval)
+    {
+        move_pattern(0,-1);
+        clearInterval(fastLeftInterval);
+        fastLeftInterval=setInterval(function(){
+            move_pattern(0,-1);
+        },150);
+    }
+}
+function stop_fast_left()
+{
+    clearInterval(fastLeftInterval);
+    fastLeftInterval=null;
+}
+function fast_right()
+{
+    if(!fastRighInterval)
+    {
+        move_pattern(0,1);
+        clearInterval(fastRighInterval);
+        fastRighInterval=setInterval(function(){
+            move_pattern(0,1);
+        },150);
+    }
+}
+function stop_fast_right()
+{
+    clearInterval(fastRighInterval);
+    fastRighInterval=null;
 }
