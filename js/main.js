@@ -137,6 +137,8 @@ function init_game()
     //自动下落
     autoDown(autoDownMs);
 
+    ConnectServer();//连接服务器
+
 }
 function listen_keys()
 {
@@ -751,7 +753,8 @@ function change_mode(MODE)
     }
     active_button(MODE)//更新按钮按下效果
     gameMode=MODE;//切换模式
-    autoUpdata();//获取服务端排行数据
+    // autoUpdata();//获取服务端排行数据 //切换模式后需要将排行榜的数据更新为其他模式的数据,但不必向服务端请求,可新建变量存储本地数据
+    writeHistoryListToHtml(LocalData);//用本地数据来更新
 }
 function UpTheLastLine()//上涨
 {

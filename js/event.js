@@ -105,8 +105,6 @@ $(document).ready(//文档结构已经加载完成后执行（不包含图片等
             });
             
         }
-        // stop_or_run_game();
-        ConnectServer();
 
     }
 )

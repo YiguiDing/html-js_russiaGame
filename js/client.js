@@ -7,9 +7,10 @@ var autoUpdataInterval=null;//自动更新排行榜数据定时器
 
 function ConnectServer()//连接服务器
 {
+    console.log("与服务端建立连接......")
     if(wss!=null && wss.readyState==1)
     {
-        console.log("已经与服务端建立过连接。")
+        console.log("已经与服务端建立过连接。");
         return;
     }
     wss = new WebSocket( protocol + hostname + ":" + port + "/");
@@ -37,7 +38,7 @@ function closeConnection()
     wss.close();
 }
 
-
+var LocalData;//记录从服务端获取的数据
 
 function processReceivedMessage(MessageEvent)//对从服务端收到的数据进行处理
 {
@@ -48,6 +49,7 @@ function processReceivedMessage(MessageEvent)//对从服务端收到的数据进
     {
         console.log("更新页面排行榜数据...");
         writeHistoryListToHtml(jsOBJ);
+        LocalData=jsOBJ;//将数据记录到本地
     }
 }
 function writeHistoryListToHtml(jsOBJ)//将从服务端获取到的数据写入页面
@@ -63,35 +65,37 @@ function writeHistoryListToHtml(jsOBJ)//将从服务端获取到的数据写入�
         text_score[i].innerHTML=jsOBJ[gameMode][i]["score"];
     }
 }
-function getHistoryList()//向服务端发送获取排行榜数据请求
-{
-    //javaScript对象 -> JSON.stringify -> 字符串 -> data[Buffer] -> toString()字符串 -> JSON.parse() -> javaScript对象
-    // ConnectServer();//与服务器建立连接
-    var request={//构建请求数据格式
-        requestType:"请求排行榜数据",
-        data:{
+// 与服务端建立连接后 服务端会发送排行榜数据，不必请求了
+// function getHistoryList()//向服务端发送获取排行榜数据请求 
+// {
+//     //javaScript对象 -> JSON.stringify -> 字符串 -> data[Buffer] -> toString()字符串 -> JSON.parse() -> javaScript对象
+//     // ConnectServer();//与服务器建立连接
+//     var request={//构建请求数据格式
+//         requestType:"请求排行榜数据",
+//         data:{
             
-        }
-    };
-    var String=JSON.stringify(request);//将JavaScript对象转换成json格式字符串
-    console.log(String);
-    sendMessage(String);
-    // closeConnection();
-}
+//         }
+//     };
+//     var String=JSON.stringify(request);//将JavaScript对象转换成json格式字符串
+//     console.log(String);
+//     sendMessage(String);
+//     // closeConnection();
+// }
 
-function autoUpdata()//自动更新
-{
-    getHistoryList();//先立即更新一次（立即向服务端发送数据）
-    if(autoUpdataInterval)//然后重新设置定时器
-        clearInterval(autoUpdataInterval);
-    autoUpdataInterval=setInterval(
-        function()
-        {
-            getHistoryList();
-        },
-        30000//30秒自动更新一次
-    );
-}
+// 服务端数据更新时会自动广播给客户端 所以不必反复向服务端发送请求
+// function autoUpdata()//自动更新 
+// {
+//     getHistoryList();//先立即更新一次（立即向服务端发送数据）
+//     if(autoUpdataInterval)//然后重新设置定时器
+//         clearInterval(autoUpdataInterval);
+//     autoUpdataInterval=setInterval(
+//         function()
+//         {
+//             getHistoryList();
+//         },
+//         30000//30秒自动更新一次
+//     );
+// }
 
 function addUserScoreToSever(gameMode,playerName,score)//将用户得分添加到服务器记录
 {
