@@ -4,8 +4,17 @@ const STEP_LEN=40;//单个方块的宽
 const STEP_NEXT_LEN=25;//预览界面下一个方块的宽
 const MAX_COL=10;//边界宽
 const MAX_ROW=20;//边界高
+const JD_MODE="经典模式",JS_MODE="加速模式",XS_MODE="限时模式",KN_MODE="困难模式";
+var game_is_ruing=true;//游戏暂停
+var game_is_over=false;//游戏结束
+var gameMode=JD_MODE;//默认经典模式
 var score=0,temp_score=0,history_score=0;//得分
-var autoDownInterval=0;//定时器
+var timeMs=0;//剩余时间毫秒
+var autoDownMs=300;//毫秒
+var reSetAutoDownInterval=0;//重设"自动下落定时器"的定时器
+var upTheLastLineInterval=0;//使最后一行上涨的定时器
+var timeDecreaseInterval=0;//使时间减少的定时器
+var autoDownInterval=0;//自动下落定时器
 var fastDownInterval=0;//快速下降方块的定时器
 var fastLeftInterval=0;//快速左移方块的定时器
 var fastRighInterval=0;//快速右移方块的定时器
@@ -28,6 +37,18 @@ var PATTERN=[
         2:{row:2,col:1},// |   | X |   |   |            // 2,1
         3:{row:3,col:1},// |   | X |   |   |            // 3,1
     },
+    {                   // I形状//为提高被随机到的概论
+        0:{row:0,col:1},// |   | X |   |   |            // 0,1
+        1:{row:1,col:1},// |   | X |   |   |            // 1,1
+        2:{row:2,col:1},// |   | X |   |   |            // 2,1
+        3:{row:3,col:1},// |   | X |   |   |            // 3,1
+    },
+    {                   // 土形状
+        0:{row:1,col:1},// |   |   |   |   |            
+        1:{row:2,col:1},// |   | X |   |   |            // 1,1
+        2:{row:2,col:0},// | X | X | X |   |    // 2,0  // 2,1  // 2,2         
+        3:{row:2,col:2},// |   |   |   |   |    
+    },
     {                   // 土形状
         0:{row:1,col:1},// |   |   |   |   |            
         1:{row:2,col:1},// |   | X |   |   |            // 1,1
@@ -45,7 +66,14 @@ var PATTERN=[
         1:{row:1,col:2},// |   | X | X |   |    // 1,1  // 1,2            
         2:{row:2,col:2},// |   |   | X | X |            // 2,2  // 2,3
         3:{row:2,col:3},// |   |   |   |   |
-    },    {                    
+    },
+    {                    
+        0:{row:1,col:1},// |   |   |   |   |            
+        1:{row:1,col:2},// |   | X | X |   |    // 1,1  // 1,2       
+        2:{row:2,col:1},// |   | X | X |   |    // 2,1  // 2,2
+        3:{row:2,col:2},// |   |   |   |   |    
+    },
+    {                    
         0:{row:1,col:1},// |   |   |   |   |            
         1:{row:1,col:2},// |   | X | X |   |    // 1,1  // 1,2       
         2:{row:2,col:1},// |   | X | X |   |    // 2,1  // 2,2
@@ -62,10 +90,20 @@ function init_game()
 {
     //console.log("init_game函数被调用");
     //先清除定时器再清除背景容器
+    clearInterval(timeDecreaseInterval);
+    clearInterval(reSetAutoDownInterval);
+    clearInterval(upTheLastLineInterval);
     clearInterval(autoDownInterval);
     clearInterval(fastDownInterval);
     clearInterval(fastLeftInterval);
     clearInterval(fastRighInterval);
+    game_is_ruing=true;
+    game_is_over=false;
+    // gameMode=JD_MODE;//默认经典模式 每次初始化不重设
+    score=0,temp_score=0,//得分
+    timeMs=0;//剩余时间毫秒
+    autoDownMs=300;//毫秒
+
     //清空背景容器
     var background = document.getElementsByClassName("background")[0];//背景容器
     background.innerHTML=null;
@@ -74,9 +112,11 @@ function init_game()
     if(score>history_score)
     {
         history_score=score;
-        var text_history_score=document.getElementsByClassName("text_history_score")[0];
-        text_history_score.innerHTML=history_score.toString();
     }
+    //更新html数据
+    document.getElementsByClassName("text_history_score_lable")[0].innerHTML="最高得分：";
+    document.getElementsByClassName("text_history_score")[0].innerHTML=history_score;
+
     //清空当前得分
     score=0;
     var text_score=document.getElementsByClassName("text_score")[0];
@@ -87,6 +127,7 @@ function init_game()
         document.getElementsByClassName("game_button")[0].style.display="";
 
     }
+    active_button(gameMode);//更新按钮按下状态
     //计算并设置浏览器缩放
     reSizeHtml();
     //监听按键事件
@@ -94,13 +135,14 @@ function init_game()
     //创建模型
     creat_pattern();
     //自动下落
-    autoDown();
+    autoDown(autoDownMs);
+
 }
 function listen_keys()
 {
-    var Left=37,Up=38,Right=39;Down=40;
+    var Left=37,Up=38,Right=39;Down=40,Spase=32;
     document.onkeydown = function(event){   //onkeypress按下松开、onkeyup松开、onkeydown按下
-        //console.log(event.keyCode);
+        // console.log(event.keyCode);
         //console.log(document.onkeydown);
         switch(event.keyCode)
         {
@@ -127,6 +169,9 @@ function listen_keys()
                 //move_cell(-1,0);
                 //move_pattern(-1,0);
                 turn_around();
+                break;
+            case Spase:
+                // stop_or_run_game();
                 break;
         }
 
@@ -185,7 +230,7 @@ function move_pattern(toDown,toLeft)
         text_score.innerHTML=score.toString();
 
     }
-    if(check_gameOver())//检测游戏是否结束
+    if(check_gameOver()||game_is_over)//检测游戏是否结束
     {
         if(score>history_score)
         {
@@ -196,7 +241,49 @@ function move_pattern(toDown,toLeft)
 
         console.log("游戏结束。");
         alert("游戏结束。\n你的得分是: " + score);
-        init_game();
+        stop_or_run_game();
+
+        if(check_Score_obove_HistoryListScore(score))
+        {
+            var playerName=prompt("打破服务端历史记录,留个名吧~");
+            if(playerName!=null)
+            {
+                while(playerName==null||playerName==""||playerName.length>10||haveSensitiveWord(playerName)||haveNumber(playerName))//检测是否空是否过长是否有敏感关键字是否有数字
+                {
+                    if(playerName==null)
+                        break;
+                    if(playerName=="")
+                        playerName=prompt("名字不能为空哦~");
+                    else if(playerName.length>10)
+                    {
+                        playerName=prompt("名字太长了！！！");
+                    }
+                    else if(haveSensitiveWord(playerName))
+                    {
+                        playerName=prompt("??? 好好说话");
+                    }else if(haveNumber(playerName))
+                    {
+                        playerName=prompt("不能包含数字,请重新输入");
+                    }
+                    else
+                    {
+                        playerName=prompt("请重新输入");
+                    }
+                }
+            }
+            if(playerName!=null)
+            {
+                addUserScoreToSever(gameMode,playerName,score);//向服务端请求记录数据
+                alert("你的得分已经被提交到服务器了~");
+            }else
+            {
+                alert("已取消提交");
+            }
+            
+        }
+        // init_game();//初始化到默认游戏模式
+        change_mode(gameMode);//初始化到当前游戏模式
+        return;
     }
     //移动方块
     var cells = document.getElementsByClassName("cell");
@@ -432,7 +519,7 @@ function check_gameOver()//就是检测被固定的方块frozen_cells有没有�
     }
     return false;
 }
-function autoDown()
+function autoDown(ms)
 {
     if(autoDownInterval)
         clearInterval(autoDownInterval);
@@ -441,7 +528,7 @@ function autoDown()
         {
             move_pattern(1,0);
         },
-        300
+        ms
     );
 }
 function draw_next_pattern()
@@ -602,4 +689,141 @@ function stop_fast_right()
 {
     clearInterval(fastRighInterval);
     fastRighInterval=null;
+}
+function stop_or_run_game()//暂停、运行状态切换
+{
+    if(game_is_ruing)
+    {
+        game_is_ruing=false;
+        clearInterval(autoDownInterval);
+    }else
+    {
+        game_is_ruing=true;
+        autoDown(autoDownMs);
+    }
+}
+
+function change_mode(MODE)
+{
+    // alert("测试"+MODE);
+    if(MODE==JD_MODE)//经典
+    {
+        init_game();
+    }else
+    if(MODE==JS_MODE)//急速
+    {
+        init_game();
+        reSetAutoDownInterval=setInterval(function()
+        {
+            var newIntervalMs=autoDownMs-score/5
+            if(newIntervalMs>=50)//逐渐加快速度,最快50
+            {
+                autoDown(newIntervalMs);//重新设置移动速度
+                console.log("新的自动下落速度:"+ (newIntervalMs));
+            }
+        },5000);//每隔5秒重新根据得分情况加速(重新设置自动下落间隔，定时器的定时器)
+    }else
+    if(MODE==XS_MODE)//
+    {
+        init_game();
+        timeMs=1000*100;//100秒
+        // writeTimeToHtml();
+        timeDecreaseInterval=setInterval(() => {
+            decreaseTimeMS(100);//减少时间
+            writeTimeToHtml();//写入html
+            if(timeMs<=0)//时间结束
+            {
+                game_is_over=true;//其他函数会检测这个变量判断是否应该结束执行后续操作
+                clearInterval(timeDecreaseInterval);//结束自己
+            }
+            
+        }, 100);
+
+    }
+    else
+    if(MODE=KN_MODE)//困难模式
+    {
+        init_game();//设置一个每隔一定事件上涨一行的定时器
+        upTheLastLineInterval=setInterval(function()
+        {
+            UpTheLastLine()
+        },10000);//每隔10秒上涨一次
+    }
+    active_button(MODE)//更新按钮按下效果
+    gameMode=MODE;//切换模式
+    autoUpdata();//获取服务端排行数据
+}
+function UpTheLastLine()//上涨
+{
+    var background = document.getElementsByClassName("background")[0];//背景容器
+    var frozen_cells = document.getElementsByClassName("frozen_cell");
+
+    var temp=[];
+    for(var i = 0 ; i < frozen_cells.length  ; i++)//遍历所有对象
+    {
+        if(parseInt(frozen_cells[i].style.top ||0,10) == (MAX_ROW-1)*STEP_LEN)//如果该方块在最后一行
+        {
+            temp.push({//记录该方块的坐标
+                top:parseInt(frozen_cells[i].style.top ||0,10)+"px",
+                left:parseInt(frozen_cells[i].style.left ||0,10)+"px"
+            });
+        }
+        frozen_cells[i].style.top=parseInt(frozen_cells[i].style.top ||0,10) - STEP_LEN + "px";//移动
+    }
+    for(var i=0;i<temp.length;i++)
+    {
+        var newDiv = document.createElement("div");//创建div
+        newDiv.className    =  "frozen_cell";//为其指定class类名
+        newDiv.style.top    =  temp[i]["top"];//设置相对位置
+        newDiv.style.left   =  temp[i]["left"]
+        background.appendChild(newDiv);//附加为next的子元素
+    }
+
+}
+function writeTimeToHtml()//将剩余时间(倒计时)写入HTML
+{
+
+    var text_history_score_lable=document.getElementsByClassName("text_history_score_lable");
+    var text_history_score=document.getElementsByClassName("text_history_score");
+
+    text_history_score_lable[0].innerHTML="剩余时间:";
+    text_history_score[0].innerHTML=(timeMs/1000).toFixed(1);
+
+}
+function decreaseTimeMS(ms)//每次50ms
+{
+
+    timeMs-=ms;
+
+}
+function active_button(MODE)//根据当前游戏模式给button添加按下效果
+{
+    //移除其他按钮的按下效果
+    var change_mode_buttons = document.getElementsByClassName("change_mode_button");
+    for(var i=0;i<change_mode_buttons.length;i++)
+    {
+        change_mode_buttons[i].className ="change_mode_button";
+        // change_mode_buttons[i].classList.replace ="is_active";
+    }
+    
+    if(MODE==JD_MODE)//经典
+    {//给按钮添加按下效果
+        document.getElementById("modeToJD").className+=" is_active";
+    }else
+    if(MODE==JS_MODE)//急速
+    {
+        document.getElementById("modeToJS").className+=" is_active";
+    }else
+    if(MODE==XS_MODE)//限时模式
+    {
+        document.getElementById("modeToXS").className+=" is_active";
+    }
+    else
+    if(MODE=KN_MODE)//困难模式
+    {
+        document.getElementById("modeToKN").className+=" is_active";
+    }
+
+
+    
 }

@@ -9,18 +9,45 @@
         <div class="game">
             <div class="background">
                 <!-- <div class="cell" style="top: 0px;left: 0px;"></div> -->
+                <!-- <div class="frozen_cell" style="top: 0px;left: 0px;"></div> -->
             </div>
             <div class="right_sider">
                 <div class="next_pattern_box">
                     <div class="next_continer">
-                        <!-- <div class="cell" style="top: 0px;left: 0px;"></div> -->
+                        <!-- <div class="cell_next" style="top: 0px;left: 0px;"></div> -->
                     </div>
                 </div>
                 <div class="score_box historyScore">
-                    <div  class="score">历史最高：<span class="text_history_score">0</span></div>
+                    <div  class="score"><span class="text_history_score_lable">最高得分：</span><span class="text_history_score">0</span></div>
                 </div>
                 <div class="score_box presentScore">
                     <div  class="score">当前得分：<span class="text_score">0</span></div>
+                </div>
+                <div class="historyScoreList">
+                    <ul class="historyScoreList_UL">
+                        <div class="historyScoreList_tittle">排行榜</div>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                        <li class="historyScoreList_LI"><div class="list_text_name">YiguiDing</div><div class="list_text_score">0</div></li>
+                    </ul>
+                </div>
+                <div class="change_mode_buttons">
+                    <ul class="change_mode_buttons_UL">
+                        <div class="change_mode_buttons_tittle">玩法切换</div>
+                        <li class="change_mode_buttons_LI"><button class="change_mode_button" id="modeToJD">经典</button></li>
+                        <li class="change_mode_buttons_LI"><button class="change_mode_button" id="modeToJS">加速</button></li>
+                        <li class="change_mode_buttons_LI"><button class="change_mode_button" id="modeToXS">限时</button></li>
+                        <li class="change_mode_buttons_LI"><button class="change_mode_button" id="modeToKN">困难</button></li>
+                    </ul>
                 </div>
                 <div class="copyRightBox">
                     <div class="copyRightText">2022 © <a href="/index.html">Yigui Ding</a></div>
@@ -36,5 +63,8 @@
     </body>
     <script src="./js/jQuery_v3.6.0.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/client.js"></script>
     <script src="./js/event.js"></script>
+    <script src="./js/sensitiveWordsDetect.js"></script>
+
 </html>

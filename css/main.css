@@ -202,3 +202,176 @@ body{
     /* text-decoration: none; 下划线*/
     color: white;
 }
+
+.historyScoreList{
+    position: absolute;
+    left: 0px;
+    top:  250px;
+
+    width: 150px;
+    height: auto;
+    
+    /* background-color: red; */
+    border-top: 2px solid #33691E;
+    box-sizing: border-box;
+
+    
+}
+/* 列表 */
+.historyScoreList_UL {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px;
+    
+    width: 130px;
+    background-color: #33691E;
+    border: 2px solid #33691E;
+    box-sizing: border-box;
+
+    box-shadow: 0px 0px 5px #000000;
+
+  }
+.historyScoreList_tittle{
+    height: 25px;
+    width: 100%;
+    margin: 0px auto;
+    
+    text-align: center;
+    line-height: 25px;
+    color: white;
+    font-size:smaller;
+    background-color: #33691E;
+    /* border: 3px solid #33691E; */
+}
+/* 列表选项样式 */
+.historyScoreList_LI{
+    height: 25px;
+    border: 1px solid #ffffff;
+    margin-top: -1px; /* 防止双倍边框 */
+
+    color: black;
+    background-color: #ffffff;
+
+    position: relative;
+}
+
+.list_text_name{
+    position: absolute;
+    top: 0px;
+    left: 1px;
+
+    width: 60%; 
+    height: 25px;
+
+    text-align:center;
+    line-height: 25px;
+
+    color: #1f3f12;
+    background-color:#b5d887;
+
+    font-weight: bold;
+    font-size: 10px;
+
+    font-family: 'Open Sans Condensed',sans-serif;
+
+    /* 超出部分隐藏 */
+    overflow:hidden;
+    /* normal忽略空白符 */
+    white-space: normal;
+    /* 超出部分文字处理方式 clip修剪（默认），ellipsis省略号 */
+    text-overflow: clip;
+
+}
+.list_text_score{
+    position: absolute;
+    top: 0px;
+    right: 1px;
+
+    width: 37%; 
+    height: 25px;
+
+    text-align:center;
+    line-height: 25px;
+    
+    color: #1f3f12;
+    background-color: #b5d887;
+
+    font-weight: bold;
+    font-size: 10px;
+
+    font-family: 'Open Sans Condensed',sans-serif;
+
+}
+.change_mode_buttons{
+    position: absolute;
+    top: 600px;
+    left: 0px;
+
+    width: 150px;
+    height: 150px;
+
+    background-color: transparent;
+    /* border-top: 2px solid #ff0000; */
+    box-sizing: border-box;
+
+}
+.change_mode_buttons_UL{
+
+    list-style-type: none;
+    padding: 0;
+    margin: 10px;
+    
+    width: 130px;
+    background-color: #33691E;
+    border: 2px solid #33691E;
+    box-sizing: border-box;
+
+    box-shadow: 0px 0px 5px #000000;
+
+    
+}
+.change_mode_buttons_tittle{
+    height: 25px;
+    width: 100%;
+    margin: 0px auto;
+    
+    text-align: center;
+    line-height: 25px;
+    color: white;
+    font-size:smaller;
+    background-color: #33691E;
+
+
+}
+.change_mode_buttons_LI{
+    height: 25px;
+    border: 1px solid #ffffff;
+    margin-top: -1px; /* 防止双倍边框 */
+
+    color: black;
+    background-color: #ffffff;
+
+    position: relative;
+}
+.change_mode_button{
+    width: 125px;
+    height: 25px;
+
+    margin: 0px 0px;
+    text-align:center;
+    
+    color: #1f3f12;
+    background-color: #b5d887;
+    box-shadow: 0 0 2px #526836 inset;
+    border: 2px solid transparent;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: none;
+    font-family: 'Open Sans Condensed',sans-serif;
+}
+.change_mode_button:active{
+    box-shadow: 0 0 10px #526836 inset;
+}
+.is_active{
+    box-shadow: 0 0 10px #526836 inset;
+}
