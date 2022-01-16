@@ -29,8 +29,10 @@ var server=http.createServer(
                 {
                     console.log("文件读取错误:"+err);
                     console.log("用户请求的url为:"+request.url);
+                    console.log("发送个用户文件为:"+basePath_404);
                     response.statusCode=404;
-                    response.end(fs.readFile(basePath_404));
+                    response.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                    response.end(fs.readFileSync(basePath_404));
                 }else
                 {
                     console.log("文件读取成功");
