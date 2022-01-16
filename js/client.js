@@ -1,4 +1,5 @@
-const hostname = "hostname.ltd";
+const protocol= 'ws://';
+const hostname = "127.0.0.1";
 const port = 54321;
 
 var wss=null;
@@ -11,7 +12,7 @@ function ConnectServer()//连接服务器
         console.log("已经与服务端建立过连接。")
         return;
     }
-    wss = new WebSocket('wss://' + hostname + ":" + port + "/");
+    wss = new WebSocket( protocol + hostname + ":" + port + "/");
     wss.onopen = function(evt) {  //绑定“连接事件”,与服务端建立连接后自动执行的函数
             
             console.log("与服务端的连接建立成功!");
