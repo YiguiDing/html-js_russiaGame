@@ -39,7 +39,7 @@ function closeConnection()
     wss.close();
 }
 
-var LocalData;//记录从服务端获取的数据
+var LocalData=null;//记录从服务端获取的数据
 
 function processReceivedMessage(MessageEvent)//对从服务端收到的数据进行处理
 {
@@ -55,6 +55,8 @@ function processReceivedMessage(MessageEvent)//对从服务端收到的数据进
 }
 function writeHistoryListToHtml(jsOBJ)//将从服务端获取到的数据写入页面
 {
+    if(jsOBJ==null)
+        return;
     var text_names=document.getElementsByClassName("list_text_name");
     for(var i=0;i<text_names.length;i++)
     {

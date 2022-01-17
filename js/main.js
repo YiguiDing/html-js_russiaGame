@@ -18,6 +18,27 @@ var autoDownInterval=0;//自动下落定时器
 var fastDownInterval=0;//快速下降方块的定时器
 var fastLeftInterval=0;//快速左移方块的定时器
 var fastRighInterval=0;//快速右移方块的定时器
+
+//音效
+const collision_audio = document.createElement("audio");//方块下落后的音效
+collision_audio.src="/audio/collision.mp3";
+collision_audio.load();//加载资源
+
+
+const clear_audio = document.createElement("audio");//清除方块时的音效
+clear_audio.src="/audio/clear.mp3";
+clear_audio.load();//加载资源
+
+const around_audio = document.createElement("audio");//旋转移动音效
+around_audio.src="/audio/around.mp3";
+around_audio.load();//加载资源
+
+const moveRL_audio = around_audio;//左右移动音效
+
+const moveDown_audio = around_audio;//下移音效
+
+
+
 var PATTERN=[
     {                   // 正L形状
         0:{row:1,col:1},// |   |   |   |   |            
@@ -225,6 +246,8 @@ function move_pattern(toDown,toLeft)
     //移动前检测
     while(temp_score=check_and_clear_full_line())//查找铺满的行并清除该行、下沉其上方块
     {
+        
+        setTimeout(play_audio(clear_audio),500);//500ms后发出声音
         score+=temp_score*10;
         console.log("当前得分: "+score);
 
@@ -234,16 +257,15 @@ function move_pattern(toDown,toLeft)
     }
     if(check_gameOver()||game_is_over)//检测游戏是否结束
     {
-        if(score>history_score)
+        console.log("游戏结束。");
+        stop_or_run_game();//暂停方块下落
+        alert("游戏结束。\n你的得分是: " + score);
+        if(score>history_score)//0分不提示
         {
             history_score=score;
             var text_history_score=document.getElementsByClassName("text_history_score")[0];
             text_history_score.innerHTML=history_score.toString();
         }
-
-        console.log("游戏结束。");
-        alert("游戏结束。\n你的得分是: " + score);
-        stop_or_run_game();
 
         if(check_Score_obove_HistoryListScore(score))
         {
@@ -279,7 +301,7 @@ function move_pattern(toDown,toLeft)
                 alert("你的得分已经被提交到服务器了~");
             }else
             {
-                alert("已取消提交");
+                alert("已取消提交得分");
             }
             
         }
@@ -424,6 +446,7 @@ function turn_around()
         console.log("已恢复原位。");
         return;
     }
+    // play_audio(around_audio);
 }
 function deepClone(obj) {//通过js的内置对象JSON来进行数组对象的深拷贝
     var _obj = JSON.stringify(obj),
@@ -464,6 +487,7 @@ function check_onFloor()//检测是否到底
 
 function frozen()//冻结到底的方块和碰撞的方块
 {
+    play_audio(collision_audio);//播放方块落地音效
     var cells = document.getElementsByClassName("cell");
     for(var i = cells.length-1 ; i >= 0  ; i--)
     {
@@ -528,6 +552,7 @@ function autoDown(ms)
     autoDownInterval=setInterval(
         function()
         {
+            // play_audio(moveDown_audio);
             move_pattern(1,0);
         },
         ms
@@ -651,6 +676,7 @@ function fast_down()//加速下落
     {
         clearInterval(fastDownInterval);
         fastDownInterval=setInterval(function(){
+            // play_audio(moveDown_audio);
             down_step();
         },20);
     }
@@ -665,9 +691,11 @@ function fast_left()
     if(!fastLeftInterval)
     {
         move_pattern(0,-1);
+        // play_audio(moveRL_audio);
         clearInterval(fastLeftInterval);
         fastLeftInterval=setInterval(function(){
             move_pattern(0,-1);
+            // play_audio(moveRL_audio);
         },150);
     }
 }
@@ -681,9 +709,11 @@ function fast_right()
     if(!fastRighInterval)
     {
         move_pattern(0,1);
+        // play_audio(moveRL_audio);
         clearInterval(fastRighInterval);
         fastRighInterval=setInterval(function(){
             move_pattern(0,1);
+            // play_audio(moveRL_audio);
         },150);
     }
 }
@@ -829,4 +859,11 @@ function active_button(MODE)//根据当前游戏模式给button添加按下效�
 
 
     
+}
+
+function play_audio(audio) {
+    // console.log("播放音频");
+    audio.loop=false;
+    audio.currentTime = 0;
+    audio.play();
 }
