@@ -2,9 +2,12 @@ body{
     background-color:#b5d887;
     margin: 0px auto;
     /* 禁止选中文字 */
-    -moz-user-select:none;
-    -webkit-user-select:none;
-    user-select:none;
+    /*-webkit-touch-callout: initial;*/ /*当在iOS上一直按住一个目标元素时，Safari会展示一个关于这个链接的callout信息。*/
+    -webkit-user-select: none;/*webkit浏览器*/
+    -khtml-user-select: none;/*早期浏览器*/
+    -moz-user-select: none;/*火狐*/
+    -ms-user-select: none;/*IE10*/
+    user-select: none;/* 标准语法 防止选取 <div> 元素的文本 */
 }
 .game{
     width: 550px;
@@ -199,8 +202,9 @@ body{
     background-color: #1f3f12;
 }
 .copyRightText a{
-    /* text-decoration: none; 下划线*/
+    /* text-decoration: none; */
     color: white;
+    /* border-bottom: 1px solid white; */
 }
 
 .historyScoreList{
