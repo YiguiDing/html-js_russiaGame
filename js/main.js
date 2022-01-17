@@ -867,3 +867,8 @@ function play_audio(audio) {
     audio.currentTime = 0;
     audio.play();
 }
+
+function redirect(str)
+{
+    location.assign(str);
+}

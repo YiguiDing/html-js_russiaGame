@@ -70,10 +70,14 @@ $(document).ready(//文档结构已经加载完成后执行（不包含图片等
             $("#modeToKN").on("touchend",function(){
                 change_mode(KN_MODE);
             });
-            $("change_mode_button").forEach(element => {
-                element.styel.addClass("active");
-
+            $("#modeToKN").on("touchend",function(){
+                change_mode(KN_MODE);
             });
+            $("#id_copyRightText").on("touchend",function(){//点击超链接外div便跳转 手机端
+                redirect(document.getElementById("id_copyRightText_A").href);
+            });
+            
+            
         }else
     //对PC端起作用
         {
@@ -123,6 +127,10 @@ $(document).ready(//文档结构已经加载完成后执行（不包含图片等
             });
             
         }
+        $("#id_copyRightText").on("mousedown",function(){//点击超链接外div便跳转 手机端PC端
+            redirect(document.getElementById("id_copyRightText_A").href);
+        });
+        
 
     }
 )
