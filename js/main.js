@@ -607,6 +607,7 @@ function reSizeHtml()//按按游戏界面宽高缩放浏览器
     document.body.style.zoom=1;//页面缩放比例置1
 
     var gameHeight=document.body.clientHeight;//界面高
+        if(!isPc()) gameHeight+=document.getElementById("id_game_button").clientHeight; //如不是pc 界面的body的高度需加上按钮的高度
     var gameWidth =document.getElementsByClassName("game")[0].offsetWidth;//界面宽
 
     var browerHeight=window.innerHeight;//浏览器宽
